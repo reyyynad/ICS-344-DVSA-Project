@@ -1,0 +1,4 @@
+{
+    "pay":    {"action": "complete", "order-id": "YOUR_ORDER_ID_HERE"},
+    "update": {"action": "update",   "order-id": "YOUR_ORDER_ID_HERE", "items": {"YOUR_ITEM_ID_HERE": 5}}
+  }

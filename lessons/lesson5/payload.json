@@ -1,0 +1,18 @@
+{
+    "headers": {
+      "Authorization": "YOUR_JWT_TOKEN_HERE"
+    },
+    "body": {
+      "action": "update",
+      "order-id": "YOUR_ORDER_ID_HERE",
+      "item": {
+        "itemList": {"1": 1},
+        "status": 120,
+        "address": "YOUR_ADDRESS_HERE",
+        "token": "YOUR_CONFIRMATION_TOKEN_HERE",
+        "ts": 1775840000,
+        "total": 35,
+        "userId": "YOUR_USER_ID_HERE"
+      }
+    }
+  }
