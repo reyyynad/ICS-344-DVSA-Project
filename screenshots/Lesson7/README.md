@@ -7,11 +7,9 @@ This lesson demonstrates how excessive IAM permissions allow unauthorized action
 Lambda functions were assigned overly broad permissions, violating the principle of least privilege. This allowed attackers to invoke privileged functions and perform restricted operations.
 
 ### Exploit Evidence
-![Invocation](invocation.png)
-*Figure 1: Direct invocation of privileged Lambda function*
 
 ![Unauthorized Action](unauthorized.png)
-*Figure 2: Execution of restricted operation*
+*Figure 1: Execution of restricted operation*
 
 ## Fix
 The vulnerability was mitigated by:
@@ -20,5 +18,5 @@ The vulnerability was mitigated by:
 - Limiting Lambda invocation access
 
 ### Post-Fix Evidence
-![Logs](logs.png)
-*Figure 3: Logs confirming secure behavior after fix*
+![after fix](after-fix.png)
+*Figure 2: Logs confirming secure behaviour after fix*
