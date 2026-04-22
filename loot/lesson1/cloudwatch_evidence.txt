@@ -1,0 +1,6 @@
+Copy the exact log line here from CloudWatch after running lesson1/run.sh.
+Expected content:
+
+2026-04-17T19:35:02.412Z  abcdef12-3456-7890-abcd-ef1234567890  ERROR   FILE READ SUCCESS: You are reading the contents of my hacked file!
+
+Sanitize: redact the request ID and any account IDs before committing.

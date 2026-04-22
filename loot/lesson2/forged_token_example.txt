@@ -1,0 +1,43 @@
+========================================================
+Lesson 2 - Example of a Forged JWT (SANITIZED)
+========================================================
+
+Original (attacker's own) token decoded:
+  header  : {"kid":"<REDACTED>","alg":"RS256"}
+  payload : {
+    "sub":"<ATTACKER-SUB>",
+    "cognito:groups":["users"],
+    "iss":"https://cognito-idp.us-east-1.amazonaws.com/<POOL-ID>",
+    "cognito:username":"attacker",
+    "username":"attacker",
+    "aud":"<APP-CLIENT-ID>",
+    "token_use":"id",
+    "exp":1760000000,
+    "iat":1759996400
+  }
+  signature: <attacker's real RS256 signature>
+
+Forged token (after exploit.py swaps identity claims):
+  header  : {"kid":"<REDACTED>","alg":"RS256"}   # UNCHANGED
+  payload : {
+    "sub":"<ATTACKER-SUB>",                       # (optionally replaced with victim sub)
+    "cognito:groups":["users"],
+    "iss":"https://cognito-idp.us-east-1.amazonaws.com/<POOL-ID>",
+    "cognito:username":"reyyynad",                # <-- VICTIM
+    "username":"reyyynad",                        # <-- VICTIM
+    "aud":"<APP-CLIENT-ID>",
+    "token_use":"id",
+    "exp":1760000000,
+    "iat":1759996400
+  }
+  signature: <UNCHANGED - attacker's signature>
+
+Why this works:
+  DVSA-ORDER-MANAGER base64url-decoded only the payload and trusted
+  "username". It never called jose.JWS.createVerify(...).verify(),
+  so a valid-looking RS256 signature over a DIFFERENT payload is accepted.
+
+Expected impact:
+  - GET /orders returns the victim's order history
+  - GET /profile returns the victim's PII
+  - Orders placed are attributed to the victim
