@@ -9,6 +9,7 @@ Lambda functions were assigned overly broad permissions, violating the principle
 ### Exploit Evidence
 
 ![Unauthorized Action](unauthorized.png)
+
 *Figure 1: Execution of restricted operation*
 
 ## Fix
@@ -19,4 +20,5 @@ The vulnerability was mitigated by:
 
 ### Post-Fix Evidence
 ![after fix](after-fix.png)
+
 *Figure 2: Logs confirming secure behaviour after fix*
