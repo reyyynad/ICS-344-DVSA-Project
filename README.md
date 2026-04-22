@@ -146,66 +146,30 @@ python3 fix.py /path/to/DVSA-ORDER-MANAGER/package.json
 
 ---
 
-## 5. Documented-only lessons (3, 4, 5, 6, 8, 10)
+## . Documented-only lessons (3, 4, 5, 6, 8, 10)
 
-Each of these is reproduced in full detail in the project PDF and in `live demos (lessons 1-10)/`. Short summary here for the repo reader:
-
-### Lesson 3 — Sensitive Data Exposure
-**Target:** `DVSA-ADMIN-GET-RECEIPT` Lambda + `dvsa-receipts-bucket-*` S3
-**How to reproduce:** invoke the admin-only Lambda directly via `aws lambda invoke`:
-```bash
-aws lambda invoke --function-name DVSA-ADMIN-GET-RECEIPT \
-  --payload '{"order-id":"<any-order-id>","year":"2026","month":"04","day":"18"}' \
-  /tmp/resp.json && cat /tmp/resp.json
-```
-Returns HTTP 200 + a signed S3 URL to a ZIP of **every** receipt for that day — the function performs zero authorization.
-**Fix:** check `cognito:groups` for `admin` inside the handler; restrict `lambda:InvokeFunction` to the admin role only; make the signed URL scope a single order, not a date prefix.
-
-### Lesson 4 — Insecure Cloud Configuration
-**Target:** `dvsa-receipts-bucket-*` S3 + `DVSA-ADMIN-SHELL` Lambda (`admin_shell.js`).
-**Root cause:** S3 Block-Public-Access off, no bucket policy; the Lambda builds `const filename = "/tmp/" + body.file;` (the source even comments `// VULNERABLE`). Also `eval(body.cmd)` runs any JS a caller supplies.
-**Exploit:** in Lambda test console, send `{"body":{"userId":"<admin-id>","file":"../../etc/passwd"}}` → dumps `/etc/passwd` from the execution env.
-**Fix:** turn Block-Public-Access ON for all four sub-settings; attach a deny-by-default bucket policy; replace string concatenation with `path.basename()` + allowlist; remove `eval(cmd)` entirely.
-
-### Lesson 5 — Broken Access Control
-**Target:** `DVSA-ADMIN-UPDATE-ORDERS` Lambda.
-**Root cause:** the handler base64-decodes the JWT, reads only `username`, never checks `cognito:groups`. Any authenticated user who invokes the function is treated as admin.
-**Exploit (chain of #1 + #7):** a regular user invokes the admin Lambda directly via `aws lambda invoke` with a payload that flips their own order to `status: 120` (paid) — no money spent.
-**Fix:** verify the JWT signature (see Lesson 2's fix) **and** assert `cognito:groups` contains `admin`; add API Gateway authorizers that reject non-admin callers; scope the execution role so admin Lambdas aren't invocable by regular users' credentials.
-
-### Lesson 6 — Denial of Service
-**Target:** API Gateway stage → `DVSA-ORDER-MANAGER`.
-**Root cause:** default stage throttle is 10,000 rps burst — effectively unlimited. No per-IP / per-user rate limits anywhere.
-**Exploit:** 800 concurrent PowerShell jobs POSTing `{"action":"billing",...}` at the billing endpoint — Lambda concurrency saturates, CloudWatch shows spike in `Throttles` and `Errors`.
-**Fix:** set a conservative stage-level throttle (e.g. `rateLimit: 10`, `burstLimit: 20`); add a per-API-key usage plan; turn on AWS WAF rate-based rule; alarm on `Throttles` / `ConcurrentExecutions`.
-
-### Lesson 8 — Logic Vulnerability (Race Condition)
-**Target:** `DVSA-ORDER-COMPLETE` (payment) vs `DVSA-ORDER-UPDATE` (itemList update).
-**Root cause:** no pessimistic/conditional-write lock on the order record; update is accepted even after `orderStatus >= 200`.
-**Exploit:** click Submit on card details, then within ~50 ms fire an `update` action that bumps `itemList` from 1 to 5. Order finalizes as paid with 5 items.
-**Fix:** conditional `UpdateItem` with `ConditionExpression: "orderStatus < :processing"`; serialize state transitions with a DynamoDB optimistic-lock version attribute; reject `update` on orders with `orderStatus >= 200`.
-
-### Lesson 10 — Unhandled Exceptions
-**Target:** `DVSA-ORDER-BILLING` (`order_billing.py`).
-**Root cause:** `event["orderId"]` on line 34 with no validation — a missing field throws `KeyError`, and the whole stack trace (including `/var/task/order_billing.py` + line numbers) is returned to the caller.
-**Exploit:** `POST /order` with body `{"action":"billing"}` (omit `orderId`) — the response body is the raw Python traceback.
-**Fix:** validate input with a schema (Pydantic / jsonschema); wrap the handler body in `try/except Exception` and return a generic `{"error":"bad request"}`; configure API Gateway to map Lambda errors to a generic 500; never include stack traces in production responses.
-
+this needs to be moved up 
 ---
 
-## 6. Mitigation summary (implemented lessons)
+## 5. Mitigation summary (implemented lessons)
 
 | # | Remediation file | What it does |
 |---|---|---|
 | 1 | `lessons/lesson1/fix.py` | Prints the Node.js patch: replace `node-serialize.unserialize()` with `JSON.parse()` + reject strings containing `_$$ND_FUNC$$_`. |
 | 2 | `lessons/lesson2/fix.py` | Prints the JWKS-verification helpers (`verifyCognitoJwt`) and the replacement handler block that uses verified claims. |
+| 3 |
+| 4 |
+| 5 |
+| 6 |
 | 7 | `lessons/lesson7/fix.py` | Attaches a least-privilege inline policy (`payload.json`) to the role and lists managed policies to detach. |
+| 8 |
 | 9 | `lessons/lesson9/fix.py` | Reads the Lambda's `package.json`, flags `node-serialize`, prints `npm uninstall` + redeploy commands. |
+| 10 |
 
 Before deploying any IAM policy, replace `YOUR-DVSA-RECEIPTS-BUCKET` and `YOUR_ACCOUNT_ID` via the `BUCKET` and `ACCOUNT_ID` env vars.
 
 ---
 
-## 7. Safety & disclosure
+## 6. Safety & disclosure
 
 DVSA is an intentionally vulnerable lab application. Do not run these scripts against any system you do not own. The team takes no responsibility for misuse.
