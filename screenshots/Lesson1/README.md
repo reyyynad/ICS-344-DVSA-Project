@@ -8,9 +8,11 @@ The backend unsafely deserializes user-controlled input. Instead of treating inp
 
 ### Exploit Evidence
 ![Exploit Request](exploit-request.png)
+
 *Figure 1: Malicious request sent to the API endpoint*
 
 ![CloudWatch Logs](cloudwatch-logs.png)
+
 *Figure 2: Logs confirming execution of injected payload (PWNED_SUCCESS)*
 
 ## Fix
@@ -22,4 +24,5 @@ The vulnerability was mitigated by:
 
 ### Post-Fix Evidence
 ![After Fix](after-fix.png)
+
 *Figure 3: Request rejected after applying mitigation*
