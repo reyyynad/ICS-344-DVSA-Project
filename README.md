@@ -1,6 +1,6 @@
 # ICS 344 — DVSA Project
 
-A full walkthrough of **all 10 vulnerability classes** in the **Damn Vulnerable Serverless Application (DVSA)** deployed on AWS. Runnable exploit code, parameterized payloads, and ready-to-apply fixes are included for the four lessons this repo implements directly (**1, 2, 7, 9**); the remaining lessons (**3, 4, 5, 6, 8, 10**) are documented below with their targets, primitives, and mitigations.
+A full walkthrough of **all 10 vulnerability classes** in the **Damn Vulnerable Serverless Application (DVSA)** deployed on AWS. Runnable exploit code, parameterized payloads, and ready-to-apply fixes are included for the lessons this repo implements directly (**1, 2, 3, 4, 5, 6, 7, 8, 9, 10**), which are documented below with their targets, primitives, and mitigations.
 
 > **Course:** ICS 344 — Information & Computer Security
 > **Educational use only.** Every script targets a DVSA instance you personally own in your own AWS account.
