@@ -1,15 +1,1 @@
-Paste the actual `npm audit --production` output here after running it on
-the Lambda source tree. Expected high-level content:
 
-  npm audit report
-
-  node-serialize  *
-  Severity: critical
-  Arbitrary Code Execution in node-serialize
-  https://github.com/advisories/GHSA-... (CVE-2017-5941)
-  No fix available
-  node_modules/node-serialize
-
-  1 critical severity vulnerability
-
-Sanitize: remove any internal paths / usernames that may appear.
