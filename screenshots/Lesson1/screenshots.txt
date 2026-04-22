@@ -1,0 +1,81 @@
+Lesson 1 — Screenshot placement & captions
+==========================================
+
+Save every image in this folder (screenshots/Lesson1/) using the exact
+filename shown. After sanitization, copy the same PNG into loot/lesson1/.
+
+--------------------------------------------------------------------
+01-terminal-run-exploit.png      [REQUIRED]
+--------------------------------------------------------------------
+How to capture:
+  Terminal window after running:
+      cd lessons/lesson1
+      export API="https://YOUR-API-ID.execute-api.us-east-1.amazonaws.com/Stage/order"
+      bash run.sh
+  Capture from the "export API=..." line down to the last line of output.
+
+Must be visible:
+  - The exploit.py invocation line
+  - The JSON payload being POSTed (_$$ND_FUNC$$_ marker)
+  - The HTTP status / response from the API
+
+Caption (paste under the image):
+  "Fig. 1 — The exploit script POSTs a node-serialize payload to the
+   vulnerable /order endpoint. The _$$ND_FUNC$$_ marker tricks the
+   Lambda into eval-ing our IIFE."
+
+--------------------------------------------------------------------
+02-api-response-500.png          [REQUIRED]
+--------------------------------------------------------------------
+How to capture:
+  Zoom in on the terminal response body from step 01. You want the line
+  that reads:
+      { "message": "Internal server error" }
+  (The 500 is expected — our payload writes the file then crashes
+  unserialize, which is fine; the file was already created.)
+
+Must be visible:
+  - HTTP 500 / "Internal server error" in the response
+  - URL path (/order) if possible
+
+Caption:
+  "Fig. 2 — The server responds 500, but the side-effect of our payload
+   (writing /tmp/pwned.txt) has already executed. The error is from
+   unserialize() failing after the IIFE runs."
+
+--------------------------------------------------------------------
+03-cloudwatch-log-file-read-success.png   [REQUIRED]
+--------------------------------------------------------------------
+How to capture:
+  AWS Console → CloudWatch → Log groups →
+     /aws/lambda/DVSA-ORDER-MANAGER → latest log stream.
+  Expand the invocation right after you fired the exploit. Look for the
+  log line:
+      FILE READ SUCCESS: You are reading the contents of my hacked file!
+
+Must be visible:
+  - The log group name /aws/lambda/DVSA-ORDER-MANAGER (redact account ID in the breadcrumb)
+  - The timestamp
+  - The full "FILE READ SUCCESS: ..." line
+
+Caption:
+  "Fig. 3 — Confirmation in CloudWatch that our injected function ran
+   inside the Lambda: it wrote /tmp/pwned.txt, read it back, and
+   printed the file's contents to the logs."
+
+--------------------------------------------------------------------
+04-lambda-tmp-pwned-file.png     [OPTIONAL]
+--------------------------------------------------------------------
+How to capture:
+  Send a follow-up payload that execSync's `ls -la /tmp && cat /tmp/pwned.txt`
+  and capture the response body, OR screenshot the Lambda test console
+  after invoking a one-liner RCE payload.
+
+Must be visible:
+  - Listing showing /tmp/pwned.txt
+  - Its contents: "You are reading the contents of my hacked file!"
+
+Caption:
+  "Fig. 4 (optional) — Follow-up RCE listing /tmp/ inside the Lambda
+   filesystem, proving the artefact written by the injection payload
+   persists across the warm container's lifetime."

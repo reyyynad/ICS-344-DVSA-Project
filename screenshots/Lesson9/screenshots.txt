@@ -1,0 +1,93 @@
+Lesson 9 — Screenshot placement & captions
+==========================================
+
+Save every image in this folder (screenshots/Lesson9/) using the exact
+filename shown. After sanitization, copy the same PNG into loot/lesson9/.
+
+--------------------------------------------------------------------
+01-package-json-before.png       [REQUIRED]
+--------------------------------------------------------------------
+How to capture:
+  Open the Lambda's source tree (DVSA-ORDER-MANAGER), view package.json
+  in your editor or GitHub. Show the dependencies block.
+
+Must be visible:
+  - The file name (package.json)
+  - The line: "node-serialize": "0.0.4"
+
+Caption:
+  "Fig. 1 — The Lambda's package.json pins node-serialize 0.0.4.
+   This version is the root cause of the RCE surface in Lesson 1."
+
+--------------------------------------------------------------------
+02-npm-audit-critical.png        [REQUIRED]
+--------------------------------------------------------------------
+How to capture:
+  Terminal in the Lambda source tree:
+      npm audit --production
+  Capture the output that reports node-serialize / CVE-2017-5941 as a
+  critical severity advisory with "No fix available".
+
+Must be visible:
+  - Package name: node-serialize
+  - Severity: critical
+  - CVE-2017-5941 or the GHSA advisory link
+  - Summary line "1 critical severity vulnerability"
+
+Caption:
+  "Fig. 2 — npm audit flags node-serialize with a critical CVE. There
+   is no upstream patch — the vendor abandoned the package — so the
+   only remediation is to remove it."
+
+--------------------------------------------------------------------
+03-exploit-reproduces-rce.png    [REQUIRED]
+--------------------------------------------------------------------
+How to capture:
+  Terminal running:
+      cd lessons/lesson9
+      export API="https://YOUR-API-ID.execute-api.us-east-1.amazonaws.com/Stage/order"
+      bash run.sh
+  Show the exploit firing and (optionally) the CloudWatch log line
+  "FILE READ SUCCESS: ..." in a second pane.
+
+Must be visible:
+  - exploit.py / run.sh output
+  - Any evidence that the payload reached the Lambda
+    (500 response OR "FILE READ SUCCESS" log line)
+
+Caption:
+  "Fig. 3 — Our exploit reproduces the Lesson 1 RCE, but framed as
+   supply-chain abuse: we never touched application code, only the
+   transitively-vulnerable dependency."
+
+--------------------------------------------------------------------
+04-package-json-after.png        [REQUIRED]
+--------------------------------------------------------------------
+How to capture:
+  After running fix.py (or following its printed steps) and doing
+      npm uninstall node-serialize
+  screenshot the updated package.json with the dependency gone.
+
+Must be visible:
+  - Dependencies block
+  - No "node-serialize" entry
+  - (Optional) a replacement note / safe JSON.parse usage
+
+Caption:
+  "Fig. 4 — package.json after remediation: node-serialize has been
+   removed. The handler now parses the body with the built-in
+   JSON.parse, which cannot execute embedded functions."
+
+--------------------------------------------------------------------
+05-npm-audit-clean.png           [REQUIRED]
+--------------------------------------------------------------------
+How to capture:
+  Re-run `npm audit --production` in the same directory after the
+  dependency was removed and the Lambda was redeployed.
+
+Must be visible:
+  - "found 0 vulnerabilities" (or equivalent for the npm version)
+
+Caption:
+  "Fig. 5 — Clean audit after remediation. The supply-chain RCE
+   surface from Fig. 2 is gone."

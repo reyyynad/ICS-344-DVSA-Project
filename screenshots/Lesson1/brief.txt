@@ -1,1 +1,18 @@
+Lesson 1 — Event Injection (Remote Code Execution)
 
+Target  : DVSA-ORDER-MANAGER Lambda (Node.js handler uses node-serialize).
+Primitive: send a JSON body whose string value contains the
+           node-serialize marker _$$ND_FUNC$$_ followed by an IIFE.
+           unserialize() blindly evaluates the function, giving us RCE
+           inside the Lambda runtime.
+Proof   : /tmp/pwned.txt is written, and its contents are printed to
+          CloudWatch Logs as "FILE READ SUCCESS: ...".
+
+Scripts : lessons/lesson1/payload.json  — the _$$ND_FUNC$$_ payload
+          lessons/lesson1/exploit.py    — POSTs the payload to $API
+          lessons/lesson1/run.sh        — wrapper around exploit.py
+          lessons/lesson1/fix.py        — prints the Node.js patch
+                                          (JSON.parse + marker reject)
+
+Report section: 3.1 Event Injection.
+Put the 4 screenshots below into the report in the order they are listed.

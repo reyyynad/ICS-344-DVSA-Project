@@ -1,0 +1,22 @@
+Lesson 9 — Vulnerable & Outdated Components
+
+Target  : The Lambda's package.json pins node-serialize@0.0.4, which
+          carries CVE-2017-5941 (same RCE surface as Lesson 1, just
+          framed as a supply-chain issue).
+Primitive: any input that contains _$$ND_FUNC$$_ and reaches
+           unserialize() becomes arbitrary code execution.
+Proof   : npm audit flags the critical advisory; our exploit
+          reproduces the same /tmp/pwned.txt artefact as Lesson 1;
+          after removing the dependency, npm audit is clean.
+
+Scripts : lessons/lesson9/payload.json — reuses Lesson 1's payload
+          lessons/lesson9/exploit.py   — POSTs the payload
+          lessons/lesson9/run.sh       — wrapper + optional npm audit
+          lessons/lesson9/fix.py       — scans package.json, prints
+                                         removal / redeploy steps
+
+Env vars: API         = /order endpoint
+          LAMBDA_SRC  = (optional) path to DVSA-ORDER-MANAGER source
+                         tree for running npm audit locally
+
+Report section: 3.9 Vulnerable Components.

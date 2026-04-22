@@ -1,0 +1,19 @@
+Lesson 6 — Denial of Service  (documented-only)
+
+Owner   : team member responsible for lessons 3–6 / 8 / 10.
+Target  : API Gateway stage → DVSA-ORDER-MANAGER.
+Primitive: default stage throttle (~10,000 rps burst) + no per-user /
+           per-IP limits. 800 concurrent PowerShell jobs POSTing to
+           the billing endpoint saturate Lambda concurrency and throttle
+           legitimate users out.
+Fix     : set a conservative stage-level throttle (e.g. rateLimit=10,
+          burstLimit=20); add a per-API-key usage plan; turn on an AWS
+          WAF rate-based rule; alarm on Throttles / ConcurrentExecutions.
+
+Suggested screenshots to place here:
+
+  01-api-gateway-no-throttle.png      stage settings showing defaults (no throttle)
+  02-powershell-burst.png             PowerShell / shell loop firing 800 jobs
+  03-cloudwatch-throttles-spike.png   Lambda Throttles/Errors graph spike
+  04-legit-user-blocked.png           legitimate user receiving 429 / timeout
+  05-after-fix-rate-limited.png       (optional) repeat burst after fix → smooth

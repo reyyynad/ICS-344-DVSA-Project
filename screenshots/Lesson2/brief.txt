@@ -1,0 +1,22 @@
+Lesson 2 — Broken Authentication (JWT Forgery)
+
+Target  : DVSA-ORDER-MANAGER Lambda — it decodes the Cognito idToken
+          but never verifies the signature against the JWKS.
+Primitive: take our own valid idToken, base64url-decode the payload,
+           swap "cognito:username" (and optionally "sub") to the
+           victim's values, re-encode, and keep the ORIGINAL signature.
+           Server trusts it blindly and returns the victim's orders.
+Proof   : forged_response.json contains the victim's orders/PII, not
+          the attacker's.
+
+Scripts : lessons/lesson2/payload.json  — example forged token shape
+          lessons/lesson2/exploit.py    — forges + POSTs to $API
+          lessons/lesson2/run.sh        — wrapper; saves response to loot/
+          lessons/lesson2/fix.py        — prints JWKS-verification patch
+
+Env vars: TOKEN_B       = your own idToken (starter material)
+          VICTIM_USER   = victim's cognito:username (e.g. "reyyynad")
+          VICTIM_SUB    = optional; victim's sub UUID if different
+          API           = /orders endpoint
+
+Report section: 3.2 Broken Authentication.

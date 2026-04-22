@@ -1,0 +1,19 @@
+Lesson 3 — Sensitive Data Exposure  (documented-only)
+
+Owner   : team member responsible for lessons 3–6 / 8 / 10.
+Target  : DVSA-ADMIN-GET-RECEIPT Lambda + dvsa-receipts-bucket-* S3.
+Primitive: direct `aws lambda invoke --function-name DVSA-ADMIN-GET-RECEIPT
+           --payload '{"order-id":"<any>","year":"2026","month":"04",
+           "day":"18"}'` returns a signed S3 URL to a ZIP of every
+           receipt for that day — no authorization check at all.
+Fix     : enforce cognito:groups == admin inside the handler; scope the
+          signed URL to a single order; restrict lambda:InvokeFunction
+          to the admin role only.
+
+Suggested screenshots to place here (no detailed captions yet — fill
+when the team captures them from the live demo):
+
+  01-aws-lambda-invoke.png        terminal showing the aws lambda invoke call
+  02-response-signed-url.png      the returned JSON with the signed S3 URL
+  03-downloaded-zip-contents.png  unzipped contents showing multiple users' receipts
+  04-after-fix-denied.png         (optional) same call after fix returns 403 / AccessDeniedException
