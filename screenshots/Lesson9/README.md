@@ -8,9 +8,11 @@ The application relies on outdated or vulnerable libraries that contain known se
 
 ### Evidence
 ![Dependency Scan](dependency-scan.png)
+
 *Figure 1: Vulnerability scan showing insecure dependencies*
 
 ![Exploit](exploit.png)
+
 *Figure 2: Demonstration of exploitation using vulnerable package*
 
 ## Fix
@@ -21,4 +23,5 @@ The issue was mitigated by:
 
 ### Post-Fix Evidence
 ![After Fix](after-fix.png)
+
 *Figure 3: Secure dependency state after updates*
