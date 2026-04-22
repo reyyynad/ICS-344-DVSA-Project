@@ -1,0 +1,4 @@
+Lambda Invocation Output
+
+The Lambda function was successfully invoked without proper authorization.
+The response confirms execution of a privileged operation.
