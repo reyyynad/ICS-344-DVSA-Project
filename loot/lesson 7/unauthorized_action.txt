@@ -1,0 +1,4 @@
+Unauthorized Action
+
+A privileged operation was executed despite insufficient permissions.
+This confirms improper access control.
