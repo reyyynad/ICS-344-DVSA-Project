@@ -28,14 +28,14 @@ A full walkthrough of **all 10 vulnerability classes** in the **Damn Vulnerable 
 |---|---|---|
 | 1 | ✅ `lessons/lesson1/` | ✅ `pwned.txt` + CloudWatch screenshots |
 | 2 | ✅ `lessons/lesson2/` | ✅ forged-token example + response screenshots |
-| 3 | documented only — walkthrough in `live demos (lessons 1-10)/` | — |
-| 4 | documented only | — |
-| 5 | documented only (chain of #1 + #7) | — |
-| 6 | documented only | — |
+| 3 | ✅ `lessons/lesson3/`  | — |
+| 4 | ✅ `lessons/lesson4/`  | — |
+| 5 | ✅ `lessons/lesson5/`  | — |
+| 6 | ✅ `lessons/lesson6/`  | — |
 | 7 | ✅ `lessons/lesson7/` | ✅ Policy Simulator + CloudTrail screenshots |
-| 8 | documented only | — |
+| 8 | ✅ `lessons/lesson8/`  | — |
 | 9 | ✅ `lessons/lesson9/` | ✅ `npm audit` + RCE reproduction |
-| 10 | documented only | — |
+| 10 | ✅ `lessons/lesson10/`  | — |
 
 Each implemented lesson ships with four files: `payload.json`, `exploit.py`, `run.sh`, `fix.py` (consistent shape across all four).
 
