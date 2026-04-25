@@ -1,0 +1,4 @@
+{
+  "_comment": "Lesson 10 - Unhandled Exceptions payload. Omits 'orderId' intentionally to trigger Python KeyError in order_billing.py at line 34.",
+  "action": "billing"
+}
