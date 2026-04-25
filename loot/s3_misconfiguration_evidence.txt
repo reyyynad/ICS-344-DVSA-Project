@@ -1,0 +1,27 @@
+Lesson 4 — S3 Misconfiguration Evidence
+=========================================
+Bucket: dvsa-receipts-bucket-393903547258-eu-north-1
+Region: eu-north-1
+
+S3 Block Public Access Status (before fix):
+  BlockPublicAcls        : false
+  IgnorePublicAcls       : false
+  BlockPublicPolicy      : false
+  RestrictPublicBuckets  : false
+
+All four Block Public Access checkboxes were UNCHECKED.
+No bucket policy was attached.
+
+Unauthorized Upload Test:
+  Command : aws s3 cp evil.txt s3://dvsa-receipts-bucket-393903547258-eu-north-1/evil.txt
+  Result  : upload: ./evil.txt to s3://dvsa-receipts-bucket-393903547258-eu-north-1/evil.txt
+  Status  : SUCCEEDED — file uploaded without any authorization
+
+This confirms any AWS principal could write arbitrary objects
+to the bucket without restriction, violating the principle of
+least privilege at the infrastructure level.
+
+After Fix:
+  Block Public Access    : ALL four settings enabled
+  Bucket Policy          : DenyUnauthorizedPutObject applied
+  Unauthorized upload now returns: An error occurred (AccessDenied)
