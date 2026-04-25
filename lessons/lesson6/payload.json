@@ -1,0 +1,10 @@
+{
+  "_comment": "Lesson 6 - DoS flood payload. Sent concurrently by exploit.py to exhaust Lambda concurrency.",
+  "action": "billing",
+  "order-id": "YOUR_ORDER_ID_HERE",
+  "data": {
+    "ccn": "4242424242424242",
+    "exp": "12/30",
+    "cvv": "123"
+  }
+}
