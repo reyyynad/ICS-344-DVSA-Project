@@ -76,7 +76,7 @@ Each lesson is fully documented with:
 - **Structured Security Analysis** (Table A & B)
 - **Takeaways & Lessons Learned**
 
-Detailed reports for all 10 lessons are available in the [`docs/`](./docs/) or [`report/`](./report/) directory (or see the main project report: `ICS 344 project BACKUP.docx`).
+Detailed reports for all 10 lessons are available in the  [`Report/`](./Report/) directory.
 
 ---
 
