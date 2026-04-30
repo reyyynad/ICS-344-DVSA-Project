@@ -1,0 +1,23 @@
+========================================================
+Lesson 5 - Broken Access Control
+Stolen Artifact: Free Ride Order Receipt
+========================================================
+
+Order ID  : 25cc481a-5556-4cd9-94f1-21eb4e5c45d6
+User ID   : <REDACTED>
+Timestamp : 3/29/2024, 2:58:56 PM
+Status    : paid
+Total     : $0
+Token     : FREE_RIDE_TOKEN
+
+Attack Path:
+  1. Injected _$$ND_FUNC$$_ payload via DVSA-ORDER-MANAGER
+  2. node-serialize.unserialize() executed attacker JavaScript
+  3. Injected code invoked DVSA-ADMIN-UPDATE-ORDERS directly
+     using Lambda's own IAM role (no admin credentials needed)
+  4. Admin function set order status=120 (paid) and total=0
+
+Impact:
+  A regular non-admin user obtained goods for free.
+  $35 order marked as paid without any payment processed.
+  Token FREE_RIDE_TOKEN proves no legitimate payment occurred.

@@ -1,0 +1,17 @@
+========================================================
+Lesson 8 - Logic Vulnerabilities (Race Condition)
+Verification After Fix: Update Blocked on In-Progress Orders
+========================================================
+
+Fix applied:
+  DVSA-ORDER-UPDATE Lambda now checks orderStatus before
+  applying any itemList changes. If orderStatus >= 200
+  the request is rejected with a 409 Conflict error.
+
+After fix, replaying the race script returns:
+  Pay result:    {"status":"ok","msg":"order completed"}
+  Update result: {"status":"err","msg":"order already in progress"}
+
+The update is now rejected as soon as complete starts,
+eliminating the race window entirely.
+Normal cart updates (orderStatus = 100) still work correctly.

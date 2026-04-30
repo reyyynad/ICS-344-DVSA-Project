@@ -1,0 +1,31 @@
+========================================================
+Lesson 3 - Sensitive Data Exposure
+Stolen Artifact: Signed S3 Receipt URL
+========================================================
+
+Target Lambda  : DVSA-ADMIN-GET-RECEIPT
+S3 Bucket      : dvsa-receipts-bucket-639267899051-us-east-1
+Order ID       : 2233cff6-1b3b-457e-a637-e7e68cb57c79
+Order Date     : April 18, 2026
+Order Total    : $42
+
+Attack:
+  Invoked DVSA-ADMIN-GET-RECEIPT directly via AWS CLI
+  with no admin token or credentials - function had no
+  authorization check at all.
+
+Command used:
+  aws lambda invoke --function-name DVSA-ADMIN-GET-RECEIPT \
+  --payload '{"order-id":"2233cff6-...","year":"2026","month":"04","day":"18"}' \
+  /tmp/receipt-response.json
+
+Result:
+  StatusCode: 200
+  Function returned a signed S3 URL pointing to a ZIP
+  archive of ALL receipts for April 18, 2026 — not just
+  the attacker's own order. Any authenticated AWS CLI user
+  could invoke this function without restriction.
+
+Impact:
+  Full exposure of all customer receipt data for a given day.
+  No payment, no admin role, no authorization required.

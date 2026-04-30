@@ -1,0 +1,21 @@
+========================================================
+Lesson 5 - Broken Access Control
+CloudWatch Evidence: DVSA-ADMIN-UPDATE-ORDERS Invoked by Regular User
+========================================================
+
+Log Group : /aws/lambda/DVSA-ADMIN-UPDATE-ORDERS
+Region    : us-east-1
+
+Invocation triggered at time of exploit curl command.
+Caller    : Regular non-admin user (via injection chain)
+Entry     : DVSA-ORDER-MANAGER (node-serialize injection vector)
+
+What the log confirmed:
+  - DVSA-ADMIN-UPDATE-ORDERS received a synthetic event
+  - Event contained order-id: 25cc481a-5556-4cd9-94f1-21eb4e5c45d6
+  - status field set to 120 (paid), total set to 0
+  - No admin token or admin credentials were used
+  - Function has no public API route — reached only via injection
+
+This proves the admin-only Lambda was successfully invoked
+by a regular user through the broken access control chain.

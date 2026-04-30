@@ -1,0 +1,24 @@
+========================================================
+Lesson 8 - Logic Vulnerabilities (Race Condition)
+Stolen Artifact: Race Condition Terminal Output
+========================================================
+
+Order ID    : d315fab4-f578-4a3c-a6ea-999af1a32e53
+Attack type : Race condition — concurrent complete + update
+Timing gap  : ~50 ms between payment lock and order finalization
+
+Race script output:
+  Pay result:    {"status":"err","msg":"order was already processed"}
+  Update result: {"status":"ok","msg":"cart updated"}
+
+Interpretation:
+  The update ("cart updated") returned FIRST, proving it slipped
+  in while complete was still processing. The complete returned
+  an error only because the update had already modified the order
+  before it could be finalized. The exploit succeeded.
+
+Financial impact:
+  itemList: {"1020": 5}  — attacker received 5 items
+  totalAmount: 40        — only paid for 1 item ($40)
+  orderStatus: 200       — order processed, payment committed
+  orderId: d315fab4-f578-4a3c-a6ea-999af1a32e53

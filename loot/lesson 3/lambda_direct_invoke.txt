@@ -1,0 +1,21 @@
+========================================================
+Lesson 3 - Sensitive Data Exposure
+Evidence: Unauthenticated Direct Lambda Invocation
+========================================================
+
+Function  : DVSA-ADMIN-GET-RECEIPT
+Region    : us-east-1
+Caller    : Regular non-admin user (AWS CLI)
+
+Invocation result:
+  {
+    "StatusCode": 200,
+    "ExecutedVersion": "$LATEST"
+  }
+  {"status": "ok", "download_url": "https://dvsa-receipts-bucket-
+   639267899051-us-east-1.s3.amazonaws.com/zip/2026-04-18-...
+   [signed URL — REDACTED]"}
+
+This confirms the function executed with HTTP 200 and
+returned a valid signed S3 URL with no authorization error.
+The function has no identity boundary — any caller succeeds.

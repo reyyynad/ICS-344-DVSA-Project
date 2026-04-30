@@ -1,0 +1,21 @@
+========================================================
+Lesson 3 - Sensitive Data Exposure
+Verification After Fix: Unauthorized Access Blocked
+========================================================
+
+After adding ADMIN_SECRET authorization check to
+DVSA-ADMIN-GET-RECEIPT, the same invocation now returns:
+
+  {"status": "err", "msg": "Unauthorized: admin access required"}
+
+Fix applied:
+  File: DVSA-ADMIN-GET-RECEIPT / admin_get_receipts.py
+  Added check at top of lambda_handler():
+    ADMIN_SECRET = os.environ.get("ADMIN_SECRET", "")
+    if not event.get("admin_token") or
+       event.get("admin_token") != ADMIN_SECRET:
+      return {"status": "err",
+              "msg": "Unauthorized: admin access required"}
+
+This confirms unauthorized direct invocations are now
+rejected before any S3 operation is performed.

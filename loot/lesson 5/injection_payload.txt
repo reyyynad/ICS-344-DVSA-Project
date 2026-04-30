@@ -1,0 +1,21 @@
+========================================================
+Lesson 5 - Broken Access Control
+Exploit Payload: _$$ND_FUNC$$_ Injection
+========================================================
+
+Vulnerability : node-serialize.unserialize() in DVSA-ORDER-MANAGER
+Marker used   : _$$ND_FUNC$$_
+
+Payload sent via curl POST to /dvsa/order:
+  action  : _$$ND_FUNC$$_function(){...}()
+  target  : DVSA-ADMIN-UPDATE-ORDERS
+  status  : 120 (paid)
+  total   : 0
+  token   : FREE_RIDE_TOKEN
+
+API Response (expected, misleading):
+{"status":"err","msg":"unknown action"}
+
+Note: The "unknown action" error is returned by the outer handler
+after the injected function already executed and invoked the admin Lambda.
+The exploit succeeded despite this error response.

@@ -1,0 +1,20 @@
+========================================================
+Lesson 8 - Logic Vulnerabilities (Race Condition)
+Stolen Artifact: Inflated Order Record (DevTools Response)
+========================================================
+
+Order ID      : d315fab4-f578-4a3c-a6ea-999af1a32e53
+Order Status  : 200 (processed, payment committed)
+Payment TS    : 1776524928
+Total Charged : $40 (1 item price)
+
+Inflated itemList confirmed in DynamoDB:
+  "itemList": {"1020": 5}   <- 5 items recorded
+  "totalAmount": 40         <- only $40 charged (1 item)
+  "orderStatus": 200
+  "userId": <REDACTED>
+
+Attack achieved:
+  Paid for 1 item, received 5 items.
+  Saved ~$160 by exploiting the 50ms race window between
+  DVSA-ORDER-COMPLETE firing and DynamoDB order lock.
