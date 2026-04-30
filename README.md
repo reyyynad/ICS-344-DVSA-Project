@@ -112,7 +112,6 @@ This project significantly improved our understanding of cloud-native security c
 - Course: ICS 344 – Cloud Computing Security
 - Instructor: Waleed Algobi
 - Application: Damn Vulnerable Serverless Application (DVSA)
-- Team members: Raghad Almaghrabi · Renad Adel · Shatha Alharbi
 
 
 ---
