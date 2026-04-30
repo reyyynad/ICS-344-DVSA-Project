@@ -119,5 +119,5 @@ This project significantly improved our understanding of cloud-native security c
 
 **Repository**: [https://github.com/reyyynad/ICS-344-DVSA-Project](https://github.com/reyyynad/ICS-344-DVSA-Project)
 
-Made with ❤️ by Team DVSA | April 2026
+Made with ❤️ by Team #1 | April 2026
 
