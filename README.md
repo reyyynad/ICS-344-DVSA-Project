@@ -85,11 +85,12 @@ Detailed reports for all 10 lessons are available in the  [`Report/`](./Report/)
 ```
 ICS-344-DVSA-Project/
 ├── README.md
-├── docs/                  # Individual lesson reports (Markdown/PDF)
+├── Slides/                # Presentation slides
 ├── screenshots/           # Evidence screenshots
-├── code/                  # Vulnerable vs Fixed code snippets
-├── report/                # Full project report (DOCX + PDF)
-└── analysis/              # Security analysis tables
+├── live demos/            # Demonstrated videos for 10 lessons
+├── lessons/               # Vulnerable vs Fixed code snippets in details
+├── Report/                # Full project report (PDF)
+└── loot/                  # Sanitized Evidence
 ```
 
 ---
