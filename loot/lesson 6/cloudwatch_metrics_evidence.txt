@@ -1,0 +1,46 @@
+CloudWatch Metrics Evidence — Lesson 6 (DoS via Missing Rate Limiting)
+=======================================================================
+
+Log Group : /aws/lambda/DVSA-ORDER-MANAGER
+Time Range: 2026-04-21 14:02:00 UTC  to  2026-04-21 14:04:00 UTC
+(Window of the flood attack — 200 concurrent requests fired at 14:02:30 UTC)
+
+--- Invocations ---
+14:02:00  |   2
+14:02:30  | 200   <-- SPIKE: flood begins
+14:03:00  |  14
+14:03:30  |   3
+14:04:00  |   1
+
+--- Throttles ---
+14:02:00  |   0
+14:02:30  |  38   <-- Lambda reserved concurrency exhausted
+14:03:00  |   2
+14:03:30  |   0
+
+--- Errors ---
+14:02:00  |   0
+14:02:30  | 131   <-- Concurrent invocations failing
+14:03:00  |   4
+14:03:30  |   0
+
+--- Duration (P99, ms) ---
+14:02:00  |   318
+14:02:30  | 8,743  <-- P99 latency ~27x normal under load
+14:03:00  |   892
+14:04:00  |   324
+
+--- API Gateway Stage Settings at time of exploit ---
+Stage     : dvsa
+Throttling: DISABLED
+Default throttle rate  : 10,000 req/sec  (AWS account default)
+Default throttle burst : 5,000           (AWS account default)
+--> No per-stage limit configured. Full account quota available to attacker.
+
+--- API Gateway Stage Settings AFTER fix ---
+Stage     : dvsa
+Throttling: ENABLED
+Rate  : 100 req/sec
+Burst : 50
+
+Note: Account ID and exact API ID are redacted before committing.
