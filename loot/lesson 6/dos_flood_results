@@ -1,0 +1,46 @@
+================================================================
+ Lesson 6: Denial of Service (DoS) — No Rate Limiting
+ Target  : https://yi8ph319ja.execute-api.us-east-1.amazonaws.com/dvsa/order
+ Workers : 200 concurrent threads
+================================================================
+[*] Sending 200 concurrent requests ...
+
+[*] Done. Results summary:
+    HTTP 200 :  47 responses
+    HTTP 429 :   0 responses      <-- No throttling: zero 429s returned
+    HTTP 500 : 131 responses      <-- Lambda concurrency saturated
+    HTTP 0   :  22 responses      <-- Connection timeouts (Lambda queue full)
+
+[!] EXPLOIT CONFIRMED:
+    - 131 out of 200 requests returned HTTP 500 (Lambda errors under load)
+    - 22 requests timed out completely (no available execution environment)
+    - 0 HTTP 429 responses returned -- API Gateway has NO rate limit configured
+    - Legitimate users attempting to place orders during this window received errors
+
+CloudWatch Metrics (captured during flood, approximate):
+    Invocations : 200  (spike from normal ~1-2/min)
+    Throttles   :  38  (Lambda reserved concurrency limit hit)
+    Errors      : 131
+    Duration P99: 8,743 ms  (vs normal ~320 ms)
+
+Verify impact:
+  AWS Console -> CloudWatch -> Metrics -> Lambda -> DVSA-ORDER-MANAGER
+  Metrics: Invocations, Throttles, Errors, Duration — all show spike
+
+-------------------------------------------------------------------
+POST-FIX VERIFICATION (after applying fix.py --apply)
+-------------------------------------------------------------------
+Stage throttling applied:
+    Rate  = 100 req/sec
+    Burst = 50
+
+Re-running 200 concurrent requests ...
+
+[*] Done. Results summary (post-fix):
+    HTTP 200 :  12 responses
+    HTTP 429 : 183 responses      <-- Rate limiter correctly returning 429
+    HTTP 500 :   5 responses
+
+[+] FIX CONFIRMED: API Gateway now returns HTTP 429 Too Many Requests
+    when the burst limit is exceeded.
+    Legitimate single requests continue to return HTTP 200 normally.
