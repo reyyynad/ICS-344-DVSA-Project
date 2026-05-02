@@ -1,0 +1,33 @@
+S3 Public Upload Evidence — Lesson 4 (Insecure Cloud Configuration)
+======================================================================
+
+Bucket: dvsa-receipts-<REDACTED>
+Region: eu-north-1
+
+[1] Block All Public Access status (BEFORE fix):
+    BlockPublicAcls       : false
+    IgnorePublicAcls      : false
+    BlockPublicPolicy     : false
+    RestrictPublicBuckets : false
+    --> All four settings are OFF. Anyone on the internet can PUT objects.
+
+[2] Unauthenticated upload test:
+    $ aws s3 cp evil.txt s3://dvsa-receipts-<REDACTED>/evil.txt --no-sign-request
+    upload: ./evil.txt to s3://dvsa-receipts-<REDACTED>/evil.txt
+
+    HTTP 200 OK — upload accepted with no credentials.
+
+[3] Block All Public Access status (AFTER fix):
+    BlockPublicAcls       : true
+    IgnorePublicAcls      : true
+    BlockPublicPolicy     : true
+    RestrictPublicBuckets : true
+
+[4] Unauthenticated upload test (post-fix):
+    $ aws s3 cp evil.txt s3://dvsa-receipts-<REDACTED>/evil.txt --no-sign-request
+    upload failed: An error occurred (AccessDenied) when calling the PutObject operation:
+    Access Denied
+
+    --> Upload correctly blocked after enabling Block All Public Access.
+
+Note: All bucket names and account IDs are redacted before committing.
