@@ -1,0 +1,7 @@
+{
+  "errorType": "KeyError",
+  "errorMessage": "'orderId'",
+  "stackTrace": [
+    "  File \"/var/task/order_billing.py\", line 34, in lambda_handler\n    orderId = event['orderId']"
+  ]
+}
